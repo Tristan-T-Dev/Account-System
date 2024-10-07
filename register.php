@@ -11,14 +11,19 @@ if (isset($_POST['submit'])){
     $select = mysqli_query($conn, "SELECT * FROM `user_form` WHERE email = '$email' AND
      password = '$pass'") or die('query failed');
 
-    if(mysqli_num_rows($select) > 0){
-        $message[] = 'Account Already Exist';
-    }else{
-        mysqli_query($conn, "INSERT INTO `user_form` (name, email, password) 
-        VALUES ('$name', '$email', '$pass')") or die(mysqli_error($conn));
-        $message[] = 'Registered Successfully';
-        header('location: login.php');
-    }
+        // Check if passwords match
+        if ($pass != $cpass) {
+            $message[] = 'Passwords Do Not Match';
+        } else {
+            $select = mysqli_query($conn, "SELECT * FROM `user_form` WHERE email = '$email' AND password = '$pass'") or die('query failed');
+            if (mysqli_num_rows($select) > 0) {
+                $message[] = 'Account Already Exists';
+            } else {
+                mysqli_query($conn, "INSERT INTO `user_form`(name, email, password) VALUES('$name', '$email', '$pass')") or die(mysqli_error($conn));
+                $message[] = 'Registered Successfully';
+                header('location: login.php');
+            }
+        }
 }
 ?>
 
